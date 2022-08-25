@@ -2,11 +2,34 @@ import tkinter.filedialog
 import subprocess
 from tkinter import *
 import os
+import webbrowser
 
+def SupportAuthor():
+    webbrowser.open_new('https://space.bilibili.com/87690728')
+def ShowInfo():
+    global root
+    infoWindow = Tk()
+    infoWindow.title("关于")
+    # info windows
+    infoLog = Label(infoWindow, text='Mpy-cross -version 0.2c\n',fg="green")
+    support = Button(infoWindow, text="-点我支持作者-", fg="red",command=SupportAuthor)
+    infoLog2 = Label(infoWindow, text='支持esp32 esp32s3 esp32s2 rpi-pico\n'
+                                      'esp选择xtensa\n'
+                                      'rpi-pico选择armv7emdp')
+
+    infoLog.pack()
+    infoLog2.pack()
+    support.pack()
+    infoWindow.update()
+    SetPos(infoWindow,infoWindow.winfo_width(),infoWindow.winfo_height(),root.winfo_x(),root.winfo_y())
 
 def InstallEnvironment():
+    global log, root
+    log.config(text='安装环境中，请等待')
+    root.update()
     r = subprocess.Popen('pip install mpy-cross', shell=True)
     r.wait()
+    log.config(text='必须有python环境；再次选择同一文件反选')
 
 
 def Select():
@@ -24,8 +47,12 @@ def Select():
     ResetRootSize()
 
 
+def SetPos(windows: Tk, w, h, x, y):
+    windows.geometry(f"{w}x{h}+{x}+{y}")
+
+
 def ResetRootSize():
-    global chooseFile, root, w, h, btns,btnPosz
+    global chooseFile, root, w, h, btns, btnPosz
     size = len(chooseFile)
     x, y = root.winfo_x(), root.winfo_y()
     sizeW, sizeH = w, h
@@ -61,7 +88,9 @@ def OutPut():
             # mpy-cross button.py - o e:\1.mpy
         chooseFile = []
         chooseLabel.config(text='')
-        os.startfile(filename)
+        print(isOpenFold.get())
+        if isOpenFold.get():
+            os.startfile(filename)
     else:
         return
     ResetRootSize()
@@ -71,6 +100,7 @@ w, h = 550, 140
 outDir = ''
 chooseFile: list[str] = []
 root = Tk()
+
 root.title("Mpy翻译姬 --by阿辰")
 
 root.geometry("550x140+700+500")
@@ -93,31 +123,43 @@ tkinter.Radiobutton(root, text='x64', variable=v, value=3).place(x=450, y=80)
 # mpy-cross支持架构 x86, x64, armv6, armv6m, armv7m, armv7em, armv7emsp, armv7emdp, xtensa, xtensawin
 # s3 esp32 xtensa
 # rpi pico armv7emdp
-btns: list[Button] = []
+btns: list[Widget] = []
 btnPosz: list[tuple] = []
-
 
 btn0 = Button(root, text="安装环境", command=InstallEnvironment, width="6")
 btn0.place(x=0, y=110)
 root.update()
 
 btns.append(btn0)
-btnPosz.append((btns[-1].winfo_x(),btns[-1].winfo_y()))
-
+btnPosz.append((btns[-1].winfo_x(), btns[-1].winfo_y()))
 
 btn1 = Button(root, text="选择文件", command=Select, width="10")
-btn1.place(x=100, y=100)
+btn1.place(x=150, y=100)
 root.update()
 
 btns.append(btn1)
-btnPosz.append((btns[-1].winfo_x(),btns[-1].winfo_y()))
-
+btnPosz.append((btns[-1].winfo_x(), btns[-1].winfo_y()))
 
 btn2 = Button(root, text="输出", command=OutPut, width="10")
-btn2.place(x=250, y=100)
+btn2.place(x=270, y=100)
 root.update()
 
 btns.append(btn2)
-btnPosz.append((btns[-1].winfo_x(),btns[-1].winfo_y()))
+btnPosz.append((btns[-1].winfo_x(), btns[-1].winfo_y()))
+
+btn3 = Button(root, text="关于", command=ShowInfo, width="6")
+btn3.place(x=0, y=80)
+root.update()
+
+btns.append(btn3)
+btnPosz.append((btns[-1].winfo_x(), btns[-1].winfo_y()))
+
+isOpenFold =tkinter.IntVar()
+checkb = Checkbutton(text='转换后打开文件夹',variable=isOpenFold)
+checkb.place(x=400, y=100)
+root.update()
+
+btns.append(checkb)
+btnPosz.append((btns[-1].winfo_x(), btns[-1].winfo_y()))
 
 root.mainloop()
