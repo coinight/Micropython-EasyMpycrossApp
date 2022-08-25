@@ -11,11 +11,11 @@ def InstallEnvironment():
 
 def Select():
     global chooseLabel, chooseFile
-    filenames = tkinter.filedialog.askopenfiles()
+    filenames = tkinter.filedialog.askopenfiles(filetypes=(("python files", "*.py"),))
     print(filenames)
     for f in filenames:
         filename = f.name
-        if filename != "" and filename[-3:] == '.py':
+        if filename != "":
             if filename in chooseFile:
                 chooseFile.remove(filename)
             else:
