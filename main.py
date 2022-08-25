@@ -15,7 +15,7 @@ def Select():
     print(filenames)
     for f in filenames:
         filename = f.name
-        if filename != "":
+        if filename != "" and filename[-3:] == '.py':
             if filename in chooseFile:
                 chooseFile.remove(filename)
             else:
